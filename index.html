@@ -1,0 +1,1285 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chandler Camarena — Hardware Security Researcher</title>
+<meta name="description" content="Hardware Security Researcher specializing in formal hardware-software security contracts, microarchitectural side-channel analysis, and LLVM/Clang static analysis. Fulbright Scholar, ASU Summa Cum Laude, TS/SCI.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Martian+Mono:wght@300;400;500;600&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg:        #080b0f;
+    --bg2:       #0e1318;
+    --bg3:       #141a22;
+    --border:    #1e2830;
+    --border2:   #263040;
+    --amber:     #e8a422;
+    --amber-dim: #7a5510;
+    --text:      #d4dce6;
+    --text-muted:#6a7d90;
+    --text-dim:  #3d5060;
+    --white:     #f0f4f8;
+    --mono: 'Martian Mono', monospace;
+    --serif: 'Instrument Serif', Georgia, serif;
+    --sans: 'DM Sans', sans-serif;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--sans);
+    font-size: 16px;
+    line-height: 1.6;
+    overflow-x: hidden;
+  }
+
+  /* Noise texture overlay */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 0;
+    opacity: 0.6;
+  }
+
+  /* ─── NAV ─── */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    padding: 0 clamp(1.5rem, 5vw, 4rem);
+    height: 64px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: rgba(8, 11, 15, 0.85);
+    backdrop-filter: blur(16px);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .nav-logo {
+    font-family: var(--mono);
+    font-size: 0.78rem;
+    font-weight: 500;
+    color: var(--amber);
+    letter-spacing: 0.05em;
+    text-decoration: none;
+  }
+
+  .nav-links {
+    display: flex;
+    gap: 2rem;
+    list-style: none;
+  }
+
+  .nav-links a {
+    font-family: var(--mono);
+    font-size: 0.72rem;
+    font-weight: 400;
+    color: var(--text-muted);
+    text-decoration: none;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    transition: color 0.2s;
+  }
+
+  .nav-links a:hover { color: var(--white); }
+
+  /* ─── LAYOUT ─── */
+  .container {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 clamp(1.5rem, 5vw, 4rem);
+    position: relative;
+    z-index: 1;
+  }
+
+  section { padding: 5rem 0; }
+
+  /* ─── HERO ─── */
+  #hero {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding-top: 64px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  /* Grid lines background */
+  #hero::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image:
+      linear-gradient(var(--border) 1px, transparent 1px),
+      linear-gradient(90deg, var(--border) 1px, transparent 1px);
+    background-size: 60px 60px;
+    mask-image: radial-gradient(ellipse 80% 80% at 50% 50%, black 0%, transparent 80%);
+    opacity: 0.35;
+    pointer-events: none;
+  }
+
+  .hero-eyebrow {
+    font-family: var(--mono);
+    font-size: 0.72rem;
+    font-weight: 400;
+    color: var(--amber);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    margin-bottom: 1.5rem;
+    opacity: 0;
+    animation: fadeUp 0.6s ease 0.1s forwards;
+  }
+
+  .hero-name {
+    font-family: var(--serif);
+    font-size: clamp(3.2rem, 8vw, 7rem);
+    font-weight: 400;
+    color: var(--white);
+    line-height: 1.0;
+    letter-spacing: -0.02em;
+    margin-bottom: 1.2rem;
+    opacity: 0;
+    animation: fadeUp 0.7s ease 0.2s forwards;
+  }
+
+  .hero-name em {
+    font-style: italic;
+    color: var(--amber);
+  }
+
+  .hero-descriptor {
+    font-family: var(--sans);
+    font-size: clamp(1rem, 2.2vw, 1.3rem);
+    font-weight: 300;
+    color: var(--text-muted);
+    max-width: 560px;
+    line-height: 1.7;
+    margin-bottom: 2.5rem;
+    opacity: 0;
+    animation: fadeUp 0.7s ease 0.35s forwards;
+  }
+
+  .hero-badges {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem;
+    margin-bottom: 3rem;
+    opacity: 0;
+    animation: fadeUp 0.7s ease 0.45s forwards;
+  }
+
+  .badge {
+    font-family: var(--mono);
+    font-size: 0.68rem;
+    font-weight: 400;
+    padding: 0.35rem 0.8rem;
+    border: 1px solid var(--border2);
+    border-radius: 3px;
+    color: var(--text-muted);
+    letter-spacing: 0.04em;
+    background: var(--bg2);
+    transition: all 0.2s;
+  }
+
+  .badge:hover {
+    border-color: var(--amber-dim);
+    color: var(--amber);
+    background: rgba(232, 164, 34, 0.05);
+  }
+
+  .badge.highlight {
+    border-color: var(--amber-dim);
+    color: var(--amber);
+    background: rgba(232, 164, 34, 0.08);
+  }
+
+  .hero-cta {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+    opacity: 0;
+    animation: fadeUp 0.7s ease 0.55s forwards;
+  }
+
+  .btn {
+    font-family: var(--mono);
+    font-size: 0.75rem;
+    font-weight: 500;
+    padding: 0.8rem 1.6rem;
+    border-radius: 4px;
+    text-decoration: none;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    transition: all 0.2s;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .btn-primary {
+    background: var(--amber);
+    color: var(--bg);
+    border: 1px solid var(--amber);
+  }
+
+  .btn-primary:hover {
+    background: #f5b832;
+    box-shadow: 0 0 24px rgba(232, 164, 34, 0.3);
+  }
+
+  .btn-secondary {
+    background: transparent;
+    color: var(--text);
+    border: 1px solid var(--border2);
+  }
+
+  .btn-secondary:hover {
+    border-color: var(--text-muted);
+    color: var(--white);
+    background: var(--bg2);
+  }
+
+  /* Scroll indicator */
+  .scroll-hint {
+    position: absolute;
+    bottom: 2.5rem;
+    left: clamp(1.5rem, 5vw, 4rem);
+    font-family: var(--mono);
+    font-size: 0.65rem;
+    color: var(--text-dim);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    opacity: 0;
+    animation: fadeUp 0.7s ease 0.9s forwards;
+  }
+
+  .scroll-hint::before {
+    content: '';
+    width: 28px;
+    height: 1px;
+    background: var(--text-dim);
+    display: block;
+  }
+
+  /* ─── SECTION HEADERS ─── */
+  .section-label {
+    font-family: var(--mono);
+    font-size: 0.7rem;
+    font-weight: 400;
+    color: var(--amber);
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    margin-bottom: 0.75rem;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+
+  .section-label::before {
+    content: '';
+    width: 20px;
+    height: 1px;
+    background: var(--amber);
+    display: block;
+  }
+
+  .section-title {
+    font-family: var(--serif);
+    font-size: clamp(2rem, 4vw, 3rem);
+    font-weight: 400;
+    color: var(--white);
+    line-height: 1.15;
+    margin-bottom: 3rem;
+  }
+
+  .section-title em {
+    font-style: italic;
+    color: var(--amber);
+  }
+
+  /* ─── DIVIDER ─── */
+  .divider {
+    width: 100%;
+    height: 1px;
+    background: var(--border);
+    margin: 0;
+  }
+
+  /* ─── ABOUT ─── */
+  #about .about-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4rem;
+    align-items: start;
+  }
+
+  .about-text p {
+    font-size: 1rem;
+    font-weight: 300;
+    color: var(--text);
+    line-height: 1.8;
+    margin-bottom: 1.2rem;
+  }
+
+  .about-text p:last-child { margin-bottom: 0; }
+
+  .about-text strong {
+    color: var(--white);
+    font-weight: 500;
+  }
+
+  .about-sidebar {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+
+  .info-block {
+    padding: 1.2rem 1.4rem;
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-left: 2px solid var(--amber);
+    border-radius: 4px;
+  }
+
+  .info-block-label {
+    font-family: var(--mono);
+    font-size: 0.65rem;
+    color: var(--text-dim);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-bottom: 0.4rem;
+  }
+
+  .info-block-value {
+    font-family: var(--sans);
+    font-size: 0.92rem;
+    color: var(--text);
+    font-weight: 400;
+  }
+
+  .info-block-value a {
+    color: var(--amber);
+    text-decoration: none;
+  }
+
+  .info-block-value a:hover { text-decoration: underline; }
+
+  /* ─── RESEARCH / PROJECTS ─── */
+  .project-card {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 0 2rem;
+    padding: 2rem 0;
+    border-bottom: 1px solid var(--border);
+    position: relative;
+    transition: background 0.2s;
+  }
+
+  .project-card:first-child { border-top: 1px solid var(--border); }
+
+  .project-card:hover {
+    background: transparent;
+  }
+
+  .project-card:hover .project-title { color: var(--amber); }
+
+  .project-num {
+    font-family: var(--mono);
+    font-size: 0.7rem;
+    color: var(--text-dim);
+    padding-top: 0.3rem;
+    min-width: 2.5rem;
+    letter-spacing: 0.06em;
+  }
+
+  .project-meta-row {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 0.5rem;
+    flex-wrap: wrap;
+  }
+
+  .project-title {
+    font-family: var(--serif);
+    font-size: 1.35rem;
+    font-weight: 400;
+    color: var(--white);
+    transition: color 0.2s;
+  }
+
+  .project-status {
+    font-family: var(--mono);
+    font-size: 0.65rem;
+    padding: 0.2rem 0.55rem;
+    border-radius: 3px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+
+  .status-active {
+    background: rgba(232, 164, 34, 0.12);
+    border: 1px solid var(--amber-dim);
+    color: var(--amber);
+  }
+
+  .status-complete {
+    background: rgba(100, 160, 130, 0.1);
+    border: 1px solid rgba(100, 160, 130, 0.3);
+    color: #72c4a0;
+  }
+
+  .project-org {
+    font-family: var(--mono);
+    font-size: 0.7rem;
+    color: var(--text-muted);
+    letter-spacing: 0.04em;
+  }
+
+  .project-desc {
+    font-size: 0.93rem;
+    color: var(--text);
+    line-height: 1.75;
+    margin-bottom: 1rem;
+    font-weight: 300;
+  }
+
+  .project-bullets {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    margin-bottom: 1.2rem;
+  }
+
+  .project-bullets li {
+    font-size: 0.88rem;
+    color: var(--text-muted);
+    padding-left: 1.2rem;
+    position: relative;
+    font-weight: 300;
+    line-height: 1.65;
+  }
+
+  .project-bullets li::before {
+    content: '›';
+    position: absolute;
+    left: 0;
+    color: var(--amber);
+    font-weight: 600;
+  }
+
+  .tech-stack {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+  }
+
+  .tech-tag {
+    font-family: var(--mono);
+    font-size: 0.65rem;
+    padding: 0.2rem 0.6rem;
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: 3px;
+    color: var(--text-dim);
+    letter-spacing: 0.04em;
+  }
+
+  /* ─── EDUCATION ─── */
+  .edu-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+  }
+
+  .edu-card {
+    padding: 1.8rem;
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    position: relative;
+    overflow: hidden;
+    transition: border-color 0.2s;
+  }
+
+  .edu-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, var(--amber), transparent);
+  }
+
+  .edu-card:hover { border-color: var(--border2); }
+
+  .edu-school {
+    font-family: var(--serif);
+    font-size: 1.2rem;
+    color: var(--white);
+    margin-bottom: 0.3rem;
+  }
+
+  .edu-degree {
+    font-size: 0.88rem;
+    color: var(--text-muted);
+    margin-bottom: 0.8rem;
+    font-weight: 300;
+  }
+
+  .edu-details {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+  }
+
+  .edu-detail-item {
+    font-family: var(--mono);
+    font-size: 0.7rem;
+    color: var(--text-dim);
+    letter-spacing: 0.03em;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .edu-detail-item .dot {
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    background: var(--amber);
+    flex-shrink: 0;
+  }
+
+  /* ─── EXPERIENCE ─── */
+  .exp-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+  }
+
+  .exp-item {
+    display: grid;
+    grid-template-columns: 180px 1fr;
+    gap: 2rem;
+    padding: 2rem 0;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .exp-item:first-child { border-top: 1px solid var(--border); }
+
+  .exp-date {
+    font-family: var(--mono);
+    font-size: 0.72rem;
+    color: var(--text-dim);
+    padding-top: 0.3rem;
+    line-height: 1.6;
+    letter-spacing: 0.03em;
+  }
+
+  .exp-org {
+    font-family: var(--mono);
+    font-size: 0.7rem;
+    color: var(--amber);
+    letter-spacing: 0.05em;
+    margin-bottom: 0.2rem;
+  }
+
+  .exp-title {
+    font-family: var(--serif);
+    font-size: 1.2rem;
+    color: var(--white);
+    margin-bottom: 0.7rem;
+  }
+
+  .exp-desc {
+    font-size: 0.9rem;
+    color: var(--text-muted);
+    line-height: 1.75;
+    font-weight: 300;
+  }
+
+  /* ─── SKILLS ─── */
+  .skills-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5rem;
+  }
+
+  .skill-group {
+    padding: 1.5rem;
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+  }
+
+  .skill-group-label {
+    font-family: var(--mono);
+    font-size: 0.68rem;
+    color: var(--amber);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-bottom: 1rem;
+    padding-bottom: 0.7rem;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .skill-items {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+  }
+
+  .skill-item {
+    font-family: var(--mono);
+    font-size: 0.72rem;
+    padding: 0.3rem 0.7rem;
+    border: 1px solid var(--border);
+    border-radius: 3px;
+    color: var(--text-muted);
+    background: var(--bg);
+    transition: all 0.15s;
+  }
+
+  .skill-item:hover {
+    border-color: var(--amber-dim);
+    color: var(--amber);
+    background: rgba(232, 164, 34, 0.04);
+  }
+
+  .skill-item.core {
+    border-color: var(--amber-dim);
+    color: var(--text);
+    background: rgba(232, 164, 34, 0.04);
+  }
+
+  /* ─── CONTACT ─── */
+  #contact {
+    padding: 5rem 0;
+  }
+
+  .contact-inner {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 4rem;
+    align-items: start;
+  }
+
+  .contact-intro {
+    font-size: 0.95rem;
+    color: var(--text-muted);
+    line-height: 1.8;
+    font-weight: 300;
+    max-width: 480px;
+  }
+
+  .contact-links {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    min-width: 240px;
+  }
+
+  .contact-link {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.9rem 1rem;
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 5px;
+    text-decoration: none;
+    transition: all 0.2s;
+  }
+
+  .contact-link:hover {
+    border-color: var(--amber-dim);
+    background: rgba(232, 164, 34, 0.05);
+  }
+
+  .contact-link:hover .link-label { color: var(--amber); }
+
+  .link-icon {
+    font-family: var(--mono);
+    font-size: 0.7rem;
+    color: var(--text-dim);
+    width: 2rem;
+    letter-spacing: 0.04em;
+  }
+
+  .link-label {
+    font-family: var(--mono);
+    font-size: 0.75rem;
+    color: var(--text);
+    letter-spacing: 0.03em;
+    transition: color 0.2s;
+  }
+
+  .link-arrow {
+    margin-left: auto;
+    color: var(--text-dim);
+    font-size: 0.8rem;
+    transition: color 0.2s, transform 0.2s;
+  }
+
+  .contact-link:hover .link-arrow {
+    color: var(--amber);
+    transform: translateX(3px);
+  }
+
+  /* ─── FOOTER ─── */
+  footer {
+    padding: 2rem 0;
+    border-top: 1px solid var(--border);
+  }
+
+  .footer-inner {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .footer-note {
+    font-family: var(--mono);
+    font-size: 0.68rem;
+    color: var(--text-dim);
+    letter-spacing: 0.04em;
+  }
+
+  /* ─── ANIMATIONS ─── */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(18px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  .reveal {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.55s ease, transform 0.55s ease;
+  }
+
+  .reveal.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* ─── TERMINAL BLOCK ─── */
+  .terminal-block {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 1.4rem 1.6rem;
+    font-family: var(--mono);
+    font-size: 0.78rem;
+    line-height: 2;
+    color: var(--text-muted);
+    margin-bottom: 2rem;
+  }
+
+  .terminal-block .t-comment { color: var(--text-dim); }
+  .terminal-block .t-key    { color: #7eb8d4; }
+  .terminal-block .t-val    { color: #a8d4a8; }
+  .terminal-block .t-amber  { color: var(--amber); }
+  .terminal-block .t-prompt { color: var(--text-dim); }
+
+  /* ─── RESPONSIVE ─── */
+  @media (max-width: 768px) {
+    #about .about-grid { grid-template-columns: 1fr; gap: 2rem; }
+    .edu-grid { grid-template-columns: 1fr; }
+    .skills-grid { grid-template-columns: 1fr; }
+    .exp-item { grid-template-columns: 1fr; gap: 0.5rem; }
+    .contact-inner { grid-template-columns: 1fr; gap: 2rem; }
+    .contact-links { min-width: unset; }
+    .footer-inner { flex-direction: column; gap: 0.5rem; text-align: center; }
+    .nav-links { display: none; }
+    .project-card { grid-template-columns: 1fr; gap: 0.3rem; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="#hero" class="nav-logo">CC</a>
+  <ul class="nav-links">
+    <li><a href="#about">About</a></li>
+    <li><a href="#research">Research</a></li>
+    <li><a href="#education">Education</a></li>
+    <li><a href="#experience">Experience</a></li>
+    <li><a href="#skills">Skills</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="container">
+    <div class="hero-eyebrow">Hardware Security Researcher</div>
+    <h1 class="hero-name">Chandler<br><em>Camarena</em></h1>
+    <p class="hero-descriptor">
+      Formalizing the gap between what hardware guarantees architecturally
+      and what microarchitectural implementations expose as observable side effects.
+      Fulbright Scholar · M.Sc. ELTE Budapest · Available Phoenix, AZ from August 2026.
+    </p>
+    <div class="hero-badges">
+      <span class="badge highlight">Hardware Security</span>
+      <span class="badge highlight">Formal Methods</span>
+      <span class="badge highlight">LLVM / Clang</span>
+      <span class="badge">Cache Side-Channel Analysis</span>
+      <span class="badge">RISC-V</span>
+      <span class="badge">Fulbright Scholar</span>
+      <span class="badge">TS/SCI</span>
+    </div>
+    <div class="hero-cta">
+      <a href="mailto:chandler@chandlercamarena.com" class="btn btn-primary">Get in touch ↗</a>
+      <a href="https://github.com/ChandlerCamarena" target="_blank" rel="noopener" class="btn btn-secondary">GitHub</a>
+    </div>
+  </div>
+  <div class="scroll-hint">Scroll to explore</div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ABOUT -->
+<section id="about">
+  <div class="container">
+    <div class="section-label">About</div>
+    <h2 class="section-title">Formal methods meet<br><em>real hardware</em></h2>
+    <div class="about-grid reveal">
+      <div class="about-text">
+        <div class="terminal-block">
+          <div><span class="t-comment">// whoami</span></div>
+          <div><span class="t-key">identity</span>     <span class="t-val">"Hardware Security Researcher"</span></div>
+          <div><span class="t-key">institution</span>  <span class="t-val">"Eötvös Loránd University (ELTE)"</span></div>
+          <div><span class="t-key">fellowship</span>   <span class="t-amber">"Fulbright Scholar 2024–2026"</span></div>
+          <div><span class="t-key">clearance</span>    <span class="t-val">"TS/SCI (lapsed · reinstatement eligible)"</span></div>
+          <div><span class="t-key">available</span>    <span class="t-amber">"Phoenix, AZ — August 2026"</span></div>
+        </div>
+        <p>
+          I work at the intersection of <strong>formal methods, compiler infrastructure, and microarchitectural security</strong>.
+          My research asks one question from multiple angles: what does hardware expose to software
+          that the abstraction layer promises will not be observable — and how do we formally
+          characterize, verify, and close that gap?
+        </p>
+        <p>
+          My M.Sc. thesis formalized trust-boundary information leakage as a confidentiality
+          invariant violation over compiler-visible ABI semantics — syntactically correct,
+          UB-free programs that violate system-level security guarantees through object
+          representation and padding behavior. The formal machinery maps directly to
+          <strong>Caroline Trippel's hardware-software security contracts framework</strong>,
+          just instantiated at the compiler layer rather than the hardware layer.
+        </p>
+        <p>
+          My current research, <strong>ISA-Silent Channels</strong>, extends this to the ISA boundary.
+          The RISC-V formal specification defines what instructions do architecturally.
+          It says nothing about what microarchitectural state — cache timing, branch predictor
+          history, TLB effects — becomes observable as a side effect. I am formalizing that gap
+          and demonstrating it with cache-timing tooling, targeting a HASP workshop paper.
+        </p>
+        <p>
+          Before research: <strong>six years as an Information Systems Security Officer
+          in the Air National Guard</strong> (TS/SCI), including TEMPEST enforcement and
+          COMSEC/KMI management. ASU Summa Cum Laude, GPA 3.81. CLS Russian.
+          PhD applicant targeting 2027.
+        </p>
+      </div>
+      <div class="about-sidebar">
+        <div class="info-block">
+          <div class="info-block-label">Location</div>
+          <div class="info-block-value">Budapest, Hungary → Phoenix, AZ (Aug 2026)</div>
+        </div>
+        <div class="info-block">
+          <div class="info-block-label">Email</div>
+          <div class="info-block-value"><a href="mailto:chandler@chandlercamarena.com">chandler@chandlercamarena.com</a></div>
+        </div>
+        <div class="info-block">
+          <div class="info-block-label">GitHub</div>
+          <div class="info-block-value"><a href="https://github.com/ChandlerCamarena" target="_blank" rel="noopener">github.com/ChandlerCamarena</a></div>
+        </div>
+        <div class="info-block">
+          <div class="info-block-label">Thesis Repository</div>
+          <div class="info-block-value"><a href="https://github.com/ChandlerCamarena/clang-padding-leakage-checker" target="_blank" rel="noopener">clang-padding-leakage-checker</a></div>
+        </div>
+        <div class="info-block">
+          <div class="info-block-label">Research Focus</div>
+          <div class="info-block-value">Hardware-software security contracts · Microarchitectural side channels · Formal methods · LLVM/Clang static analysis</div>
+        </div>
+        <div class="info-block">
+          <div class="info-block-label">Target Venues</div>
+          <div class="info-block-value">HASP · ISCA · MICRO · ASPLOS</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- RESEARCH -->
+<section id="research">
+  <div class="container">
+    <div class="section-label">Research &amp; Projects</div>
+    <h2 class="section-title">What I'm <em>building</em></h2>
+
+    <!-- Project 1 — ISA-Silent Channels -->
+    <div class="project-card reveal">
+      <div class="project-num">01</div>
+      <div class="project-body">
+        <div class="project-meta-row">
+          <span class="project-title">ISA-Silent Channels</span>
+          <span class="project-status status-active">Active — 2026</span>
+        </div>
+        <div class="project-org">Independent Research · Target: HASP @ ISCA/MICRO</div>
+        <p class="project-desc">
+          The RISC-V ISA formal specification defines what instructions do architecturally.
+          It says nothing about what microarchitectural state becomes observable as a timing side effect.
+          Two architecturally equivalent instruction sequences can be microarchitecturally
+          distinguishable through cache timing — yet the ISA formal model has no predicate
+          capturing this distinction. That gap is where every Spectre-class attack lives.
+        </p>
+        <ul class="project-bullets">
+          <li>Formal half: characterizing at least three classes of ISA underspecification in the RISC-V Sail model, using notation consistent with Trippel's axiomatic hardware-software contracts framework</li>
+          <li>Attack tooling half: cache-timing tool demonstrating each formally identified class — formal model tells you where to look, working attack proves you were right</li>
+          <li>Extends the formal methodology from the M.Sc. thesis from the compiler-ABI layer to the ISA-microarchitecture boundary</li>
+          <li>Target output: HASP workshop paper (co-located with ISCA/MICRO 2027)</li>
+        </ul>
+        <div class="tech-stack">
+          <span class="tech-tag">RISC-V Sail</span>
+          <span class="tech-tag">Formal Methods</span>
+          <span class="tech-tag">C</span>
+          <span class="tech-tag">Cache Timing</span>
+          <span class="tech-tag">Flush+Reload</span>
+          <span class="tech-tag">Microarchitecture</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Project 2 — Thesis -->
+    <div class="project-card reveal">
+      <div class="project-num">02</div>
+      <div class="project-body">
+        <div class="project-meta-row">
+          <span class="project-title">M.Sc. Thesis — Clang/LLVM Trust-Boundary Security Analysis</span>
+          <span class="project-status status-complete">Complete — 2026</span>
+        </div>
+        <div class="project-org">ELTE Faculty of Informatics · Advisor: Prof. Zoltán Porkoláb · <a href="https://github.com/ChandlerCamarena/clang-padding-leakage-checker" target="_blank" style="color:var(--amber)">open source ↗</a></div>
+        <p class="project-desc">
+          Formalized trust-boundary information leakage as a confidentiality invariant violation
+          over compiler-visible ABI semantics. Programs can be syntactically correct,
+          undefined-behavior free, and still violate system-level security invariants through
+          object representation and padding behavior — a semantic class the type system cannot enforce.
+        </p>
+        <ul class="project-bullets">
+          <li>Formal contribution: SemanticMisconfig(P) ⟺ WellFormed(P) ∧ ¬UB(P) ∧ ¬I(P) — the gap between language-level correctness and system-level confidentiality</li>
+          <li>Evidence lattice (E0–E3) with monotonicity properties for calibrated diagnostic confidence — identical formal structure to Trippel's CheckMate methodology</li>
+          <li>Clang-Tidy implementation using RecordLayout metadata, annotation-driven boundary modeling, and AST-level initialization heuristics</li>
+          <li>Evaluated on zlib, libuv, raylib, Chipmunk2D — validated true positives, correct suppressions, zero false positives on real-world findings</li>
+        </ul>
+        <div class="tech-stack">
+          <span class="tech-tag">LLVM</span>
+          <span class="tech-tag">Clang</span>
+          <span class="tech-tag">clang-tidy</span>
+          <span class="tech-tag">CodeChecker</span>
+          <span class="tech-tag">C/C++</span>
+          <span class="tech-tag">x86-64 SysV ABI</span>
+          <span class="tech-tag">Python</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Project 3 — Capstone -->
+    <div class="project-card reveal">
+      <div class="project-num">03</div>
+      <div class="project-body">
+        <div class="project-meta-row">
+          <span class="project-title">Linux Device-Tree Hardening</span>
+          <span class="project-status status-complete">Complete — 2024</span>
+        </div>
+        <div class="project-org">ASU Capstone · Sponsor: General Dynamics Mission Systems</div>
+        <p class="project-desc">
+          Bootloader-stage mechanism to selectively disable hardware devices in the Linux device
+          tree on a secure mobile platform, reducing attack surface before userspace initialization.
+          A hardware-software boundary security problem: enforcing a source-level security policy
+          across cross-compilation toolchains, U-Boot, and embedded Linux internals.
+        </p>
+        <ul class="project-bullets">
+          <li>Cross-compilation toolchains targeting embedded Linux on secure mobile hardware</li>
+          <li>Device-tree manipulation at bootloader stage to minimize hardware attack surface</li>
+          <li>Direct exposure to the semantic gap between policy specification and deployed binary behavior on real hardware</li>
+        </ul>
+        <div class="tech-stack">
+          <span class="tech-tag">Linux</span>
+          <span class="tech-tag">U-Boot</span>
+          <span class="tech-tag">Device Tree</span>
+          <span class="tech-tag">Cross-compilation</span>
+          <span class="tech-tag">C</span>
+          <span class="tech-tag">Secure Boot</span>
+        </div>
+      </div>
+    </div>
+
+<div class="divider"></div>
+
+<!-- EDUCATION -->
+<section id="education">
+  <div class="container">
+    <div class="section-label">Education</div>
+    <h2 class="section-title">Academic <em>foundation</em></h2>
+    <div class="edu-grid reveal">
+      <div class="edu-card">
+        <div class="edu-school">Eötvös Loránd University</div>
+        <div class="edu-degree">M.Sc. Computer Science · Expected July 2026</div>
+        <div class="edu-details">
+          <div class="edu-detail-item"><span class="dot"></span>Fulbright U.S. Student Scholar 2024–2026</div>
+          <div class="edu-detail-item"><span class="dot"></span>Budapest, Hungary</div>
+          <div class="edu-detail-item"><span class="dot"></span>Advisor: Prof. Zoltán Porkoláb</div>
+          <div class="edu-detail-item"><span class="dot"></span>Dept. of Software Technology and Methodology</div>
+          <div class="edu-detail-item"><span class="dot"></span>Thesis: Detecting and Explaining Cryptographic Misuse in C/C++ via LLVM/Clang</div>
+        </div>
+      </div>
+      <div class="edu-card">
+        <div class="edu-school">Arizona State University</div>
+        <div class="edu-degree">B.S. Computer Science (Cybersecurity) · May 2024</div>
+        <div class="edu-details">
+          <div class="edu-detail-item"><span class="dot"></span>Summa Cum Laude — GPA 3.81 / 4.00</div>
+          <div class="edu-detail-item"><span class="dot"></span>Tempe, AZ</div>
+          <div class="edu-detail-item"><span class="dot"></span>U.S. State Department Critical Language Scholar — Russian (2023)</div>
+          <div class="edu-detail-item"><span class="dot"></span>Capstone: Linux Device-Tree Hardening (GDMS)</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- EXPERIENCE -->
+<section id="experience">
+  <div class="container">
+    <div class="section-label">Experience</div>
+    <h2 class="section-title">Where I've <em>worked</em></h2>
+    <div class="exp-list">
+
+      <div class="exp-item reveal">
+        <div class="exp-date">May 2026 –<br>ongoing</div>
+        <div>
+          <div class="exp-org">Independent Research</div>
+          <div class="exp-title">ISA-Silent Channels — Hardware Security Researcher</div>
+          <p class="exp-desc">
+            Formalizing microarchitectural observability gaps in the RISC-V ISA specification
+            and demonstrating them with cache-timing tooling. Formal characterization of where
+            the ISA Sail model is silent about observable side effects — the structural property
+            underlying Spectre-class attacks. Targeting a HASP workshop paper.
+          </p>
+        </div>
+      </div>
+
+      <div class="exp-item reveal">
+        <div class="exp-date">2025 – 2026</div>
+        <div>
+          <div class="exp-org">ELTE, Budapest · Fulbright Scholar</div>
+          <div class="exp-title">M.Sc. Thesis Researcher — Compiler Security</div>
+          <p class="exp-desc">
+            Built a formal model of trust-boundary information leakage grounded in C/C++
+            object representation semantics and ABI layout behavior. Implemented a complete
+            Clang-Tidy static analysis module with CodeChecker integration, evaluated on
+            open-source C libraries with manual validation of all emitted diagnostics.
+            Zero false positives in real-world findings.
+          </p>
+        </div>
+      </div>
+
+      <div class="exp-item reveal">
+        <div class="exp-date">Aug 2023 –<br>May 2024</div>
+        <div>
+          <div class="exp-org">ASU · GDMS Sponsor</div>
+          <div class="exp-title">Capstone Researcher — Hardware-Software Security</div>
+          <p class="exp-desc">
+            Built a bootloader-stage device-tree hardening mechanism for a secure mobile platform,
+            reducing hardware attack surface before userspace initialization. Worked across
+            cross-compilation toolchains, U-Boot, and embedded Linux internals — direct exposure
+            to the semantic gap between source-level security policy and deployed binary behavior
+            on real hardware.
+          </p>
+        </div>
+      </div>
+
+      <div class="exp-item reveal">
+        <div class="exp-date">Oct 2018 –<br>Oct 2024</div>
+        <div>
+          <div class="exp-org">Arizona Air National Guard · 161st ARW</div>
+          <div class="exp-title">Information Systems Security Officer (ISSO) · TS/SCI</div>
+          <p class="exp-desc">
+            Six years executing security authorization and compliance for mission-critical
+            operational systems. NIST 800-53 controls, ATO packages, POA&M management,
+            and incident coordination. TEMPEST enforcement per AFMANs — controlling
+            electromagnetic emanation risks from hardware systems. COMSEC management
+            including KMI operations and cryptographic material accountability.
+            Separated as Senior Airman; TS/SCI voluntarily relinquished Aug 2024
+            (reinstatement eligible).
+          </p>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- SKILLS -->
+<section id="skills">
+  <div class="container">
+    <div class="section-label">Technical Skills</div>
+    <h2 class="section-title">Tools &amp; <em>concepts</em></h2>
+    <div class="skills-grid reveal">
+      <div class="skill-group">
+        <div class="skill-group-label">Languages</div>
+        <div class="skill-items">
+          <span class="skill-item core">C</span>
+          <span class="skill-item core">C++</span>
+          <span class="skill-item core">Python</span>
+        </div>
+      </div>
+      <div class="skill-group">
+        <div class="skill-group-label">Compiler &amp; IR</div>
+        <div class="skill-items">
+          <span class="skill-item core">LLVM</span>
+          <span class="skill-item core">Clang</span>
+          <span class="skill-item core">Clang-Tidy</span>
+          <span class="skill-item">CodeChecker</span>
+          <span class="skill-item">Static Program Analysis</span>
+        </div>
+      </div>
+      <div class="skill-group">
+        <div class="skill-group-label">Hardware Security</div>
+        <div class="skill-items">
+          <span class="skill-item core">Cache Side-Channel Analysis</span>
+          <span class="skill-item core">Microarchitecture</span>
+          <span class="skill-item core">Trust Boundary Modeling</span>
+          <span class="skill-item">TEMPEST</span>
+          <span class="skill-item">TEE / Secure Enclave</span>
+        </div>
+      </div>
+      <div class="skill-group">
+        <div class="skill-group-label">Formal Methods</div>
+        <div class="skill-items">
+          <span class="skill-item core">Security Invariant Design</span>
+          <span class="skill-item core">Evidence Lattices</span>
+          <span class="skill-item core">Information Flow Theory</span>
+          <span class="skill-item">ISA Formal Specification (Sail)</span>
+          <span class="skill-item">ABI Reasoning</span>
+        </div>
+      </div>
+      <div class="skill-group">
+        <div class="skill-group-label">Architecture</div>
+        <div class="skill-items">
+          <span class="skill-item core">RISC-V</span>
+          <span class="skill-item core">x86-64 SysV ABI</span>
+          <span class="skill-item">Speculative Execution</span>
+          <span class="skill-item">Cache Hierarchy</span>
+          <span class="skill-item">Branch Prediction</span>
+        </div>
+      </div>
+      <div class="skill-group">
+        <div class="skill-group-label">Security &amp; Systems</div>
+        <div class="skill-items">
+          <span class="skill-item core">NIST 800-53</span>
+          <span class="skill-item core">COMSEC / KMI</span>
+          <span class="skill-item">Linux Kernel</span>
+          <span class="skill-item">Cross-compilation</span>
+          <span class="skill-item">Secure Boot</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- CONTACT -->
+<section id="contact">
+  <div class="container">
+    <div class="section-label">Contact</div>
+    <h2 class="section-title">Let's <em>connect</em></h2>
+    <div class="contact-inner reveal">
+      <div>
+        <p class="contact-intro">
+          I'm actively looking for hardware security research and compiler security engineering
+          roles starting August 2026 — in Phoenix, remote, or Bay Area. Particularly interested
+          in positions at the hardware-software security boundary: formal verification, microarchitectural
+          security research, compiler security, or hardware security architecture.
+          <br><br>
+          If you're working on problems at the intersection of formal methods, compiler infrastructure,
+          and hardware security — I'd genuinely love to talk.
+        </p>
+        <br>
+        <a href="mailto:chandler@chandlercamarena.com" class="btn btn-primary" style="display:inline-flex">Send an email ↗</a>
+      </div>
+      <div class="contact-links">
+        <a href="mailto:chandler@chandlercamarena.com" class="contact-link">
+          <span class="link-icon">mail</span>
+          <span class="link-label">chandler@chandlercamarena.com</span>
+          <span class="link-arrow">→</span>
+        </a>
+        <a href="https://github.com/ChandlerCamarena" target="_blank" rel="noopener" class="contact-link">
+          <span class="link-icon">gh</span>
+          <span class="link-label">github.com/ChandlerCamarena</span>
+          <span class="link-arrow">→</span>
+        </a>
+        <a href="https://github.com/ChandlerCamarena/clang-padding-leakage-checker" target="_blank" rel="noopener" class="contact-link">
+          <span class="link-icon">proj</span>
+          <span class="link-label">clang-padding-leakage-checker</span>
+          <span class="link-arrow">→</span>
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="container">
+    <div class="footer-inner">
+      <span class="footer-note">Chandler Camarena · chandlercamarena.com</span>
+      <span class="footer-note">Hardware Security Researcher · Available Phoenix, AZ — August 2026</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+  // Scroll reveal
+  const reveals = document.querySelectorAll('.reveal');
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((entry) => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.08, rootMargin: '0px 0px -40px 0px' });
+
+  reveals.forEach(el => observer.observe(el));
+
+  // Stagger child reveals within a section
+  document.querySelectorAll('.project-card.reveal, .exp-item.reveal').forEach((el, i) => {
+    el.style.transitionDelay = `${(i % 4) * 0.08}s`;
+  });
+</script>
+</body>
+</html>
