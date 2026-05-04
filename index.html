@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Chandler Camarena — Hardware Security Researcher</title>
+<title>Chandler Camarena - Hardware Security Researcher</title>
 <meta name="description" content="Hardware Security Researcher specializing in formal hardware-software security contracts, microarchitectural side-channel analysis, and LLVM/Clang static analysis. Fulbright Scholar, ASU Summa Cum Laude, TS/SCI.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -820,9 +820,11 @@
     <li><a href="#about">About</a></li>
     <li><a href="#research">Research</a></li>
     <li><a href="#education">Education</a></li>
+    <li><a href="#awards">Awards</a></li>
     <li><a href="#experience">Experience</a></li>
     <li><a href="#skills">Skills</a></li>
     <li><a href="#contact">Contact</a></li>
+    <li><a href="/ChandlerCamarena.pdf" target="_blank">CV</a></li>
   </ul>
 </nav>
 
@@ -866,19 +868,19 @@
           <div><span class="t-comment">// whoami</span></div>
           <div><span class="t-key">identity</span>     <span class="t-val">"Hardware Security Researcher"</span></div>
           <div><span class="t-key">institution</span>  <span class="t-val">"Eötvös Loránd University (ELTE)"</span></div>
-          <div><span class="t-key">fellowship</span>   <span class="t-amber">"Fulbright Scholar 2024–2026"</span></div>
+          <div><span class="t-key">fellowship</span>   <span class="t-amber">"Fulbright Scholar 2024–2025"</span></div>
           <div><span class="t-key">clearance</span>    <span class="t-val">"TS/SCI (lapsed · reinstatement eligible)"</span></div>
-          <div><span class="t-key">available</span>    <span class="t-amber">"Phoenix, AZ — August 2026"</span></div>
+          <div><span class="t-key">available</span>    <span class="t-amber">"Phoenix, AZ - August 2026"</span></div>
         </div>
         <p>
           I work at the intersection of <strong>formal methods, compiler infrastructure, and microarchitectural security</strong>.
           My research asks one question from multiple angles: what does hardware expose to software
-          that the abstraction layer promises will not be observable — and how do we formally
+          that the abstraction layer promises will not be observable - and how do we formally
           characterize, verify, and close that gap?
         </p>
         <p>
           My M.Sc. thesis formalized trust-boundary information leakage as a confidentiality
-          invariant violation over compiler-visible ABI semantics — syntactically correct,
+          invariant violation over compiler-visible ABI semantics - syntactically correct,
           UB-free programs that violate system-level security guarantees through object
           representation and padding behavior. The formal machinery maps directly to
           <strong>Caroline Trippel's hardware-software security contracts framework</strong>,
@@ -887,8 +889,8 @@
         <p>
           My current research, <strong>ISA-Silent Channels</strong>, extends this to the ISA boundary.
           The RISC-V formal specification defines what instructions do architecturally.
-          It says nothing about what microarchitectural state — cache timing, branch predictor
-          history, TLB effects — becomes observable as a side effect. I am formalizing that gap
+          It says nothing about what microarchitectural state - cache timing, branch predictor
+          history, TLB effects - becomes observable as a side effect. I am formalizing that gap
           and demonstrating it with cache-timing tooling, targeting a HASP workshop paper.
         </p>
         <p>
@@ -902,6 +904,10 @@
         <div class="info-block">
           <div class="info-block-label">Location</div>
           <div class="info-block-value">Budapest, Hungary → Phoenix, AZ (Aug 2026)</div>
+        </div>
+        <div class="info-block">
+          <div class="info-block-label">LinkedIn</div>
+          <div class="info-block-value"><a href="https://linkedin.com/in/chandler-camarena-918a75183" target="_blank" rel="noopener">linkedin.com/in/chandler-camarena</a></div>
         </div>
         <div class="info-block">
           <div class="info-block-label">Email</div>
@@ -936,25 +942,25 @@
     <div class="section-label">Research &amp; Projects</div>
     <h2 class="section-title">What I'm <em>building</em></h2>
 
-    <!-- Project 1 — ISA-Silent Channels -->
+    <!-- Project 1 - ISA-Silent Channels -->
     <div class="project-card reveal">
       <div class="project-num">01</div>
       <div class="project-body">
         <div class="project-meta-row">
           <span class="project-title">ISA-Silent Channels</span>
-          <span class="project-status status-active">Active — 2026</span>
+          <span class="project-status status-active">Active - 2026</span>
         </div>
         <div class="project-org">Independent Research · Target: HASP @ ISCA/MICRO</div>
         <p class="project-desc">
           The RISC-V ISA formal specification defines what instructions do architecturally.
           It says nothing about what microarchitectural state becomes observable as a timing side effect.
           Two architecturally equivalent instruction sequences can be microarchitecturally
-          distinguishable through cache timing — yet the ISA formal model has no predicate
+          distinguishable through cache timing - yet the ISA formal model has no predicate
           capturing this distinction. That gap is where every Spectre-class attack lives.
         </p>
         <ul class="project-bullets">
           <li>Formal half: characterizing at least three classes of ISA underspecification in the RISC-V Sail model, using notation consistent with Trippel's axiomatic hardware-software contracts framework</li>
-          <li>Attack tooling half: cache-timing tool demonstrating each formally identified class — formal model tells you where to look, working attack proves you were right</li>
+          <li>Attack tooling half: cache-timing tool demonstrating each formally identified class - formal model tells you where to look, working attack proves you were right</li>
           <li>Extends the formal methodology from the M.Sc. thesis from the compiler-ABI layer to the ISA-microarchitecture boundary</li>
           <li>Target output: HASP workshop paper (co-located with ISCA/MICRO 2027)</li>
         </ul>
@@ -969,26 +975,26 @@
       </div>
     </div>
 
-    <!-- Project 2 — Thesis -->
+    <!-- Project 2 - Thesis -->
     <div class="project-card reveal">
       <div class="project-num">02</div>
       <div class="project-body">
         <div class="project-meta-row">
-          <span class="project-title">M.Sc. Thesis — Clang/LLVM Trust-Boundary Security Analysis</span>
-          <span class="project-status status-complete">Complete — 2026</span>
+          <span class="project-title">M.Sc. Thesis - Clang/LLVM Trust-Boundary Security Analysis</span>
+          <span class="project-status status-complete">Complete - 2026</span>
         </div>
         <div class="project-org">ELTE Faculty of Informatics · Advisor: Prof. Zoltán Porkoláb · <a href="https://github.com/ChandlerCamarena/clang-padding-leakage-checker" target="_blank" style="color:var(--amber)">open source ↗</a></div>
         <p class="project-desc">
           Formalized trust-boundary information leakage as a confidentiality invariant violation
           over compiler-visible ABI semantics. Programs can be syntactically correct,
           undefined-behavior free, and still violate system-level security invariants through
-          object representation and padding behavior — a semantic class the type system cannot enforce.
+          object representation and padding behavior - a semantic class the type system cannot enforce.
         </p>
         <ul class="project-bullets">
-          <li>Formal contribution: SemanticMisconfig(P) ⟺ WellFormed(P) ∧ ¬UB(P) ∧ ¬I(P) — the gap between language-level correctness and system-level confidentiality</li>
-          <li>Evidence lattice (E0–E3) with monotonicity properties for calibrated diagnostic confidence — identical formal structure to Trippel's CheckMate methodology</li>
+          <li>Formal contribution: SemanticMisconfig(P) ⟺ WellFormed(P) ∧ ¬UB(P) ∧ ¬I(P) - the gap between language-level correctness and system-level confidentiality</li>
+          <li>Evidence lattice (E0–E3) with monotonicity properties for calibrated diagnostic confidence - identical formal structure to Trippel's CheckMate methodology</li>
           <li>Clang-Tidy implementation using RecordLayout metadata, annotation-driven boundary modeling, and AST-level initialization heuristics</li>
-          <li>Evaluated on zlib, libuv, raylib, Chipmunk2D — validated true positives, correct suppressions, zero false positives on real-world findings</li>
+          <li>Evaluated on zlib, libuv, raylib, Chipmunk2D - validated true positives, correct suppressions, zero false positives on real-world findings</li>
         </ul>
         <div class="tech-stack">
           <span class="tech-tag">LLVM</span>
@@ -1002,13 +1008,13 @@
       </div>
     </div>
 
-    <!-- Project 3 — Capstone -->
+    <!-- Project 3 - Capstone -->
     <div class="project-card reveal">
       <div class="project-num">03</div>
       <div class="project-body">
         <div class="project-meta-row">
           <span class="project-title">Linux Device-Tree Hardening</span>
-          <span class="project-status status-complete">Complete — 2024</span>
+          <span class="project-status status-complete">Complete - 2024</span>
         </div>
         <div class="project-org">ASU Capstone · Sponsor: General Dynamics Mission Systems</div>
         <p class="project-desc">
@@ -1045,7 +1051,8 @@
         <div class="edu-school">Eötvös Loránd University</div>
         <div class="edu-degree">M.Sc. Computer Science · Expected July 2026</div>
         <div class="edu-details">
-          <div class="edu-detail-item"><span class="dot"></span>Fulbright U.S. Student Scholar 2024–2026</div>
+          <div class="edu-detail-item"><span class="dot"></span>Fulbright U.S. Student Scholar 2024–2025</div>
+          <div class="edu-detail-item"><span class="dot"></span>Self-funded continuation through thesis completion 2025–2026</div>
           <div class="edu-detail-item"><span class="dot"></span>Budapest, Hungary</div>
           <div class="edu-detail-item"><span class="dot"></span>Advisor: Prof. Zoltán Porkoláb</div>
           <div class="edu-detail-item"><span class="dot"></span>Dept. of Software Technology and Methodology</div>
@@ -1056,12 +1063,63 @@
         <div class="edu-school">Arizona State University</div>
         <div class="edu-degree">B.S. Computer Science (Cybersecurity) · May 2024</div>
         <div class="edu-details">
-          <div class="edu-detail-item"><span class="dot"></span>Summa Cum Laude — GPA 3.81 / 4.00</div>
+          <div class="edu-detail-item"><span class="dot"></span>Summa Cum Laude - GPA 3.81 / 4.00</div>
           <div class="edu-detail-item"><span class="dot"></span>Tempe, AZ</div>
-          <div class="edu-detail-item"><span class="dot"></span>U.S. State Department Critical Language Scholar — Russian (2023)</div>
+          <div class="edu-detail-item"><span class="dot"></span>U.S. State Department Critical Language Scholar - Russian (2023)</div>
           <div class="edu-detail-item"><span class="dot"></span>Capstone: Linux Device-Tree Hardening (GDMS)</div>
         </div>
       </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- AWARDS -->
+<section id="awards">
+  <div class="container">
+    <div class="section-label">Awards &amp; Fellowships</div>
+    <h2 class="section-title">Recognition &amp; <em>credentials</em></h2>
+    <div class="exp-list reveal">
+
+      <div class="exp-item">
+        <div class="exp-date">2024-2025</div>
+        <div>
+          <div class="exp-org">U.S. Department of State</div>
+          <div class="exp-title">Fulbright U.S. Student Scholar</div>
+          <p class="exp-desc">
+            Competitive federal fellowship funding graduate research abroad.
+            Selected to conduct M.Sc. research at Eotvos Lorand University (ELTE)
+            Budapest, one of Central Europe's leading research universities.
+            Fulbright is the U.S. government's flagship international exchange program.
+          </p>
+        </div>
+      </div>
+
+      <div class="exp-item">
+        <div class="exp-date">2023</div>
+        <div>
+          <div class="exp-org">U.S. Department of State</div>
+          <div class="exp-title">Critical Language Scholarship (CLS) - Russian</div>
+          <p class="exp-desc">
+            Highly competitive language immersion award granted to fewer than 550
+            Americans annually across all languages. Selected for Russian based on
+            demonstrated academic merit and national security relevance.
+          </p>
+        </div>
+      </div>
+
+      <div class="exp-item">
+        <div class="exp-date">2024</div>
+        <div>
+          <div class="exp-org">Arizona State University</div>
+          <div class="exp-title">Summa Cum Laude - B.S. Computer Science</div>
+          <p class="exp-desc">
+            Graduated with highest academic distinction. GPA 3.81 / 4.00.
+          </p>
+        </div>
+      </div>
+
     </div>
   </div>
 </section>
@@ -1079,11 +1137,11 @@
         <div class="exp-date">May 2026 –<br>ongoing</div>
         <div>
           <div class="exp-org">Independent Research</div>
-          <div class="exp-title">ISA-Silent Channels — Hardware Security Researcher</div>
+          <div class="exp-title">ISA-Silent Channels - Hardware Security Researcher</div>
           <p class="exp-desc">
             Formalizing microarchitectural observability gaps in the RISC-V ISA specification
             and demonstrating them with cache-timing tooling. Formal characterization of where
-            the ISA Sail model is silent about observable side effects — the structural property
+            the ISA Sail model is silent about observable side effects - the structural property
             underlying Spectre-class attacks. Targeting a HASP workshop paper.
           </p>
         </div>
@@ -1092,8 +1150,8 @@
       <div class="exp-item reveal">
         <div class="exp-date">2025 – 2026</div>
         <div>
-          <div class="exp-org">ELTE, Budapest · Fulbright Scholar</div>
-          <div class="exp-title">M.Sc. Thesis Researcher — Compiler Security</div>
+          <div class="exp-org">ELTE, Budapest · Fulbright Scholar (2024–2025)</div>
+          <div class="exp-title">M.Sc. Thesis Researcher - Compiler Security</div>
           <p class="exp-desc">
             Built a formal model of trust-boundary information leakage grounded in C/C++
             object representation semantics and ABI layout behavior. Implemented a complete
@@ -1108,11 +1166,11 @@
         <div class="exp-date">Aug 2023 –<br>May 2024</div>
         <div>
           <div class="exp-org">ASU · GDMS Sponsor</div>
-          <div class="exp-title">Capstone Researcher — Hardware-Software Security</div>
+          <div class="exp-title">Capstone Researcher - Hardware-Software Security</div>
           <p class="exp-desc">
             Built a bootloader-stage device-tree hardening mechanism for a secure mobile platform,
             reducing hardware attack surface before userspace initialization. Worked across
-            cross-compilation toolchains, U-Boot, and embedded Linux internals — direct exposure
+            cross-compilation toolchains, U-Boot, and embedded Linux internals - direct exposure
             to the semantic gap between source-level security policy and deployed binary behavior
             on real hardware.
           </p>
@@ -1127,7 +1185,7 @@
           <p class="exp-desc">
             Six years executing security authorization and compliance for mission-critical
             operational systems. NIST 800-53 controls, ATO packages, POA&M management,
-            and incident coordination. TEMPEST enforcement per AFMANs — controlling
+            and incident coordination. TEMPEST enforcement per AFMANs - controlling
             electromagnetic emanation risks from hardware systems. COMSEC management
             including KMI operations and cryptographic material accountability.
             Separated as Senior Airman; TS/SCI voluntarily relinquished Aug 2024
@@ -1221,12 +1279,12 @@
       <div>
         <p class="contact-intro">
           I'm actively looking for hardware security research and compiler security engineering
-          roles starting August 2026 — in Phoenix, remote, or Bay Area. Particularly interested
+          roles starting August 2026 - in Phoenix, remote, or Bay Area. Particularly interested
           in positions at the hardware-software security boundary: formal verification, microarchitectural
           security research, compiler security, or hardware security architecture.
           <br><br>
           If you're working on problems at the intersection of formal methods, compiler infrastructure,
-          and hardware security — I'd genuinely love to talk.
+          and hardware security - I'd genuinely love to talk.
         </p>
         <br>
         <a href="mailto:chandler@chandlercamarena.com" class="btn btn-primary" style="display:inline-flex">Send an email ↗</a>
@@ -1261,8 +1319,8 @@
 <footer>
   <div class="container">
     <div class="footer-inner">
-      <span class="footer-note">Chandler Camarena · chandlercamarena.com</span>
-      <span class="footer-note">Hardware Security Researcher · Available Phoenix, AZ — August 2026</span>
+      <span class="footer-note">Chandler Camarena · <a href="https://chandlercamarena.com" style="color:inherit;text-decoration:none;">chandlercamarena.com</a></span>
+      <span class="footer-note">Hardware Security Researcher · Available Phoenix, AZ - August 2026</span>
     </div>
   </div>
 </footer>
